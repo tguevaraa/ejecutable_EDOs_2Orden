@@ -1,0 +1,7 @@
+Ecuación: 1.0y'' -4.0y' +2.0y = 0
+Caso 1: Raíces reales y distintas
+Raíz 1: 3
+Raíz 2: 1
+Solución general: y(x) = C1*e^(3x) + C2*e^(1x)
+
+============================================================

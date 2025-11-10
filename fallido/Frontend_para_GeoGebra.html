@@ -1,0 +1,223 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolver Ecuaciones Diferenciales</title>
+    <script src="https://cdn.geogebra.org/apps/deployggb.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .form-container {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .graph-container {
+            flex: 2;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007cba;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #005a87;
+        }
+        #geogebra {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+            display: none;
+        }
+        #grafica-img {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resolvedor de Ecuaciones Diferenciales Lineales de Segundo Orden</h1>
+    
+    <div class="container">
+        <div class="form-container">
+            <form id="ecuacionForm">
+                <div class="form-group">
+                    <label for="a">Coeficiente a (y''):</label>
+                    <input type="number" id="a" step="any" value="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="b">Coeficiente b (y'):</label>
+                    <input type="number" id="b" step="any" value="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="c">Coeficiente c (y):</label>
+                    <input type="number" id="c" step="any" value="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="f">Término independiente f(x):</label>
+                    <input type="number" id="f" step="any" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="y0">Condición inicial y(0):</label>
+                    <input type="number" id="y0" step="any" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="yp0">Condición inicial y'(0):</label>
+                    <input type="number" id="yp0" step="any" value="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="x_min">x mínimo:</label>
+                    <input type="number" id="x_min" step="any" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="x_max">x máximo:</label>
+                    <input type="number" id="x_max" step="any" value="10">
+                </div>
+                
+                <button type="submit">Resolver y Graficar</button>
+            </form>
+            
+            <div id="resultado">
+                <h3>Resultado:</h3>
+                <p id="ecuacion-texto"></p>
+                <p id="condiciones-texto"></p>
+                <p id="metodo-texto"></p>
+                <img id="grafica-img" src="" alt="Gráfica de la solución">
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <h3>Gráfica en GeoGebra</h3>
+            <div id="geogebra"></div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar GeoGebra
+        var ggbApp = new GGBApplet({
+            "appName": "graphing",
+            "width": 800,
+            "height": 500,
+            "showToolBar": true,
+            "showAlgebraInput": true,
+            "showMenuBar": true,
+            "autoHeight": false
+        }, true);
+        
+        window.addEventListener("load", function() {
+            ggbApp.inject('geogebra');
+        });
+
+        document.getElementById('ecuacionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                a: parseFloat(document.getElementById('a').value),
+                b: parseFloat(document.getElementById('b').value),
+                c: parseFloat(document.getElementById('c').value),
+                f: parseFloat(document.getElementById('f').value),
+                y0: parseFloat(document.getElementById('y0').value),
+                yp0: parseFloat(document.getElementById('yp0').value),
+                x_min: parseFloat(document.getElementById('x_min').value),
+                x_max: parseFloat(document.getElementById('x_max').value),
+                puntos: 100
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8000/resolver', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const resultado = await response.json();
+                
+                if (response.ok) {
+                    // Mostrar resultados
+                    document.getElementById('ecuacion-texto').textContent = 
+                        `Ecuación: ${resultado.ecuacion}`;
+                    document.getElementById('condiciones-texto').textContent = 
+                        resultado.condiciones_iniciales;
+                    document.getElementById('metodo-texto').textContent = 
+                        `Método utilizado: ${resultado.metodo}`;
+                    document.getElementById('grafica-img').src = resultado.grafica;
+                    document.getElementById('resultado').style.display = 'block';
+                    
+                    // Actualizar GeoGebra con los puntos
+                    if (ggbApp && resultado.puntos) {
+                        // Limpiar gráfica anterior
+                        ggbApp.evalCommand('Delete(l1)');
+                        
+                        // Crear lista de puntos en GeoGebra
+                        const puntosStr = resultado.puntos.map(p => `(${p[0]}, ${p[1]})`).join(',');
+                        ggbApp.evalCommand(`l1 = {${puntosStr}}`);
+                        ggbApp.evalCommand('A = Point(l1)');
+                        ggbApp.evalCommand('SetPointStyle(A, 0)');
+                        ggbApp.evalCommand('SetPointSize(A, 1)');
+                        
+                        // Crear función que aproxime los puntos
+                        ggbApp.evalCommand('f(x) = FitPoly(l1, 5)');
+                    }
+                    
+                } else {
+                    alert(`Error: ${resultado.error}`);
+                }
+                
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

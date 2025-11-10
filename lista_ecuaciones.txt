@@ -1,0 +1,43 @@
+Ecuación: 1.0y'' -2.0y' -15.0y = 0
+Raíz 1: 5
+Raíz 2: -3
+Solución general: y(x) = C1*e^(5x) + C2*e^(-3x
+)
+============================================================
+Ecuación: 1.0y'' +0.0y' +9.0y = 0
+Caso 3: Raíces complejas
+Raíces: -0 ± 3i
+Solución general: y(x) = e^(-0x) * [C1*cos(3x) + C2*sin(3x)]
+
+============================================================
+Ecuación: 1.0y'' +2.0y' +5.0y = 0
+Caso 3: Raíces complejas
+Raíces: -1 ± 2i
+Solución general: y(x) = e^(-1x) * [C1*cos(2x) + C2*sin(2x)]
+
+============================================================
+Ecuación: 1.0y'' -8.0y' +16.0y = 0
+Caso 2: Raíces reales e iguales
+Raíz doble: 4
+Solución general: y(x) = (C1 + C2*x)*e^(4x)
+
+============================================================
+Ecuación: 1.0y'' +0.0y' +1.0y = 0
+Caso 3: Raíces complejas
+Raíces: -0 ± 1i
+Solución general: y(x) = e^(-0x) * [C1*cos(1x) + C2*sin(1x)]
+
+============================================================
+Ecuación: 1.0y'' -2.0y' -15.0y = 0
+Caso 1: Raíces reales y distintas
+Raíz 1: 5
+Raíz 2: -3
+Solución general: y(x) = C1*e^(5x) + C2*e^(-3x)
+
+============================================================
+Ecuación: 1.0y'' +0.0y' +1.0y = 0
+Caso 3: Raíces complejas
+Raíces: -0 ± 1i
+Solución general: y(x) = e^(-0x) * [C1*cos(1x) + C2*sin(1x)]
+
+============================================================
